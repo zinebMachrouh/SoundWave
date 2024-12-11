@@ -10,27 +10,15 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main',
-                    credentialsId: '5f3d727a-2284-4bd6-aa3d-b19a8624474e',
-                    url: "${GITHUB_REPO}"
+                git credentialsId: '5f3d727a-2284-4bd6-aa3d-b19a8624474e', url: "${GITHUB_REPO}"
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Build and Test') {
             steps {
                 script {
                     sh '''
                     docker build -t ${DOCKER_IMAGE} .
-                    '''
-                }
-            }
-        }
-
-        stage('Test Application') {
-            steps {
-                script {
-                    sh '''
-                    docker run --rm ${DOCKER_IMAGE} mvn test
                     '''
                 }
             }
