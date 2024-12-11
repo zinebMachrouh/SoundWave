@@ -1,5 +1,16 @@
 server:
-  port: 8081
+  port: 8084
+
 spring:
   application:
     name: "SoundWave"
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: SoundWave
+      username: admin
+      password: admin
+      authentication-database: admin
+#  profiles:
+#    active: "prod"
