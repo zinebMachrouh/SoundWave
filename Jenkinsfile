@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'docker/compose:alpine' 
+            image 'docker:24-dind'
             args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
@@ -18,6 +18,19 @@ pipeline {
                 git branch: 'main',
                     credentialsId: '5f3d727a-2284-4bd6-aa3d-b19a8624474e',
                     url: "${GITHUB_REPO}"
+            }
+        }
+
+        stage('Install Docker Compose') {
+            steps {
+                script {
+                    sh '''
+                    apk add --no-cache curl
+                    curl -L "https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+                    chmod +x /usr/local/bin/docker-compose
+                    docker-compose --version
+                    '''
+                }
             }
         }
 
