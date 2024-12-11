@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'docker/compose:alpine' 
+            args '--privileged -v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
 
     environment {
         GITHUB_REPO = 'https://github.com/zinebMachrouh/SoundWave.git'
@@ -8,7 +13,7 @@ pipeline {
     }
 
     stages {
-         stage('Clone Repository') {
+        stage('Clone Repository') {
             steps {
                 git branch: 'main',
                     credentialsId: '5f3d727a-2284-4bd6-aa3d-b19a8624474e',
