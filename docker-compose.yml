@@ -25,7 +25,7 @@ services:
       - "8085:8085"
     environment:
       - SPRING_PROFILES_ACTIVE=prod
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://db:3306/SoundWave
+      - SPRING_DATASOURCE_URL=mongodb://admin:admin@SoundWave-DB:27017/SoundWave?authSource=admin
       - SPRING_DATASOURCE_USERNAME=admin
       - SPRING_DATASOURCE_PASSWORD=admin
       - SWAGGER_ACTIVATION=false
