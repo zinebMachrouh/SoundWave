@@ -1,5 +1,6 @@
 package org.example.soundwave.dto;
 
+import com.mongodb.connection.ProxySettings;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -16,8 +17,8 @@ import java.util.List;
 @Data
 @Builder
 public class UserDTO {
-    @Builder.Default
-    private String id = uuidGenerator.generate();
+    @NotNull(message = "Id is required")
+    private String id ;
 
     @NotBlank(message = "Username is required")
     @Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
@@ -29,4 +30,5 @@ public class UserDTO {
 
     @NotNull(message = "Roles are required")
     private List<String> roles;
+
 }
