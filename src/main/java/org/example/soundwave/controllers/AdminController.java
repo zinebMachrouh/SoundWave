@@ -21,26 +21,31 @@ public class AdminController {
     @GetMapping("/users")
     public ResponseEntity<?> getUsers() {
         List<UserDTO> users = userService.findAllUsers();
+        System.out.println("find all");
         if (users.isEmpty()) {
-            return ResponseEntity.badRequest().body("No users found");
-        } else {
-            return ResponseEntity.ok(users);
+            return ResponseEntity.status(404).body("No users found");
         }
+        return ResponseEntity.ok(users);
     }
 
-    @GetMapping("/users/{username}")
-    public ResponseEntity<?> findUserByUsername(String username) {
+    @GetMapping("/users/find/{username}")
+    public ResponseEntity<?> findUserByUsername(@PathVariable String username) {
         Optional<User> user = userService.findByUsername(username);
+        System.out.println("find by username");
         if (user.isPresent()) {
             return ResponseEntity.ok(user.get());
-        }else {
-            return ResponseEntity.badRequest().body("User not found");
         }
+        System.out.println("User not found");
+        return ResponseEntity.status(404).body("User not found");
     }
 
-    @PostMapping("/users/roles")
-    public ResponseEntity<?> updateUserRole(@RequestBody String username, @RequestBody List<RoleDTO> roles) {
-        User user = userService.updateUserRole(username, roles);
-        return ResponseEntity.ok(user);
+    @PutMapping("/users/roles/{username}")
+    public ResponseEntity<?> updateUserRole(@PathVariable String username, @RequestBody List<RoleDTO> roles) {
+        try {
+            User user = userService.updateUserRole(username, roles);
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error updating user roles: " + e.getMessage());
+        }
     }
 }
