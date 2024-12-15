@@ -14,10 +14,9 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/v1/admin")
 @AllArgsConstructor
-public class AdminController {
+public class UserController {
     private final UserService userService;
 
-    // Users Management
     @GetMapping("/users")
     public ResponseEntity<?> getUsers() {
         List<UserDTO> users = userService.findAllUsers();
