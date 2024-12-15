@@ -9,6 +9,7 @@ import org.example.soundwave.entities.User;
 import org.example.soundwave.repositories.RoleRepository;
 import org.example.soundwave.repositories.UserRepository;
 import org.example.soundwave.utils.JwtUtil;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +26,7 @@ import java.util.*;
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/auth")
+@Profile("prod")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
