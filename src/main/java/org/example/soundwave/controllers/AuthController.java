@@ -1,5 +1,6 @@
 package org.example.soundwave.controllers;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.example.soundwave.dto.LoginRequest;
 import org.example.soundwave.dto.LoginResponse;
@@ -9,6 +10,7 @@ import org.example.soundwave.entities.User;
 import org.example.soundwave.repositories.RoleRepository;
 import org.example.soundwave.repositories.UserRepository;
 import org.example.soundwave.utils.JwtUtil;
+import org.example.soundwave.utils.TokenBlacklist;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -37,7 +39,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest, HttpSession httpSession) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
@@ -53,6 +55,7 @@ public class AuthController {
         claims.put("userId", user.getId());
 
         String token = jwtUtil.generateToken(user.getUsername(), claims);
+        httpSession.setAttribute("token", token);
 
         return ResponseEntity.ok(new LoginResponse(token, user.getUsername(), user.getRoles()));
     }
@@ -88,14 +91,26 @@ public class AuthController {
         claims.put("userId", savedUser.getId());
         String token = jwtUtil.generateToken(savedUser.getUsername(), claims);
 
+
         return ResponseEntity.ok(new LoginResponse(token, savedUser.getUsername(), savedUser.getRoles()));
     }
 
 
 
     @PostMapping("/logout")
-    public ResponseEntity<?> logout() {
-        SecurityContextHolder.clearContext();
+    public ResponseEntity<?> logout(HttpSession httpSession) {
+        httpSession.getAttribute("token");
+        TokenBlacklist.add((String) httpSession.getAttribute("token"));
+
+        System.out.println("Blacklist After Add: ");
+        System.out.println(TokenBlacklist.getBlacklist());
+
+        TokenBlacklist.clean();
+
+        System.out.println("Blacklist After Clean: ");
+        System.out.println(TokenBlacklist.getBlacklist());
+
+        httpSession.invalidate();
 
         return ResponseEntity.ok("Logged out successfully");
     }

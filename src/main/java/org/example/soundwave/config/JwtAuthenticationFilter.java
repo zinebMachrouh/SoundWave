@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.soundwave.services.CustomUserDetailsService;
 import org.example.soundwave.utils.JwtUtil;
+import org.example.soundwave.utils.TokenBlacklist;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -38,6 +39,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             String token = authorizationHeader.substring(7);
 
             try {
+                if (TokenBlacklist.contains(token)) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    return;
+                }
                 Claims claims = jwtUtil.validateToken(token).getBody();
                 String username = claims.getSubject();
 
